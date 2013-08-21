@@ -27,8 +27,8 @@ extern const uint16_t ad5504_addresses[] = {
  * Initialize a spi_device_t struct for the AD5504. These settings are taken from the [datasheet][1]
  */
 void AD5504_init(spi_device_t *dev) {
-
-
+	P2SEL &= ~BIT7;
+	P2SEL &= ~BIT6;
 	P2DIR |= 0xf0; // Setup the chip select pins.
 	P2OUT &= ~(0xf0);
 
