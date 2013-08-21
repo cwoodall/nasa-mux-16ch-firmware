@@ -116,19 +116,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: msp430-usci-uart.out
+all: nasa-mux-16ch-firmware.out
 
 # Tool invocations
-msp430-usci-uart.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+nasa-mux-16ch-firmware.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/bin/cl430" -vmsp --abi=coffabi -O0 -g --define=__MSP430G2553__ --diag_warning=225 --display_error_number --printf_support=minimal -z -m"msp430-usci-uart.map" --stack_size=80 --heap_size=80 -i"C:/ti/ccsv5/ccs_base/msp430/include" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/lib" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/include" --reread_libs --warn_sections --rom_model -o "msp430-usci-uart.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/bin/cl430" -vmsp --abi=coffabi -O0 -g --define=__MSP430G2553__ --diag_warning=225 --display_error_number --printf_support=minimal -z -m"nasa-mux-16ch-firmware.map" --stack_size=80 --heap_size=80 -i"C:/ti/ccsv5/ccs_base/msp430/include" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/lib" -i"C:/ti/ccsv5/tools/compiler/msp430_4.1.5/include" --reread_libs --warn_sections --rom_model -o "nasa-mux-16ch-firmware.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(MSP430_EXECUTABLE_OUTPUTS__QUOTED) "msp430-usci-uart.out"
+	-$(RM) $(MSP430_EXECUTABLE_OUTPUTS__QUOTED) "nasa-mux-16ch-firmware.out"
 	-$(RM) "main.pp" "src\uart\uart.pp" "src\spi\ad5504.pp" "src\spi\dac7512.pp" "src\spi\spi.pp" 
 	-$(RM) "main.obj" "src\uart\uart.obj" "src\spi\ad5504.obj" "src\spi\dac7512.obj" "src\spi\spi.obj" 
 	-@echo 'Finished clean'
