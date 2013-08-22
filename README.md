@@ -30,4 +30,32 @@ There are _magic_ bytes which effect the packets:
 | _FRAME_  |       0x81 | Indicates the start and the end of a packet, unless escaped. |
 | _ESCAPE_ |       0x80 | Escapes the _FRAME_ and _ESCAPE_ magic bytes. When used it deactivates their magical properties. |
 
+### Commands
+
+__FIXME__: Insert Command Table for quick reference.
+
+#### ~~ACK: Acknowledge (0x82) [NOT IMPLEMENTED]~~
+
+ACK is just an acknowledgement, ACK should only be sent as a response. 
+
+Data Format (n = 0): No data packet, just sends the command.
+
+#### ~~ERR: Error (0x83) [NOT IMPLEMENTED]~~
+
+ERR returns an error 
+Data Format (n = 1):
+ 
+| Name | Bytes | Description              |
+| Type | 1     | Describes the error type |
+
+Error Types:
+
+| Name | Byte | Description   |
+| GEN  | 0x00 | General Error |
+
+#### WR_REG: Write Register (0x84)
+#### ~~RD_REG: Read Register  (0x85) [NOT IMPLEMENTED]~~
+#### ~~WR_BLOCK: Write Block (0x86) [NOT IMPLEMENTED]~~
+#### ~~RD_BLOCK: READ Blcok (0x87) [ NOT IMPLEMENTED]~~
+NOT IMPLEMENTED YET
 [modbus]: #
