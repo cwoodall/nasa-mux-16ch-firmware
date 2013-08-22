@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include "crc16.h"
 
-const uint16_t crc16_ibm_table[256] = {
+const uint16_t crc16_ibm_table[] = {
     0X0000, 0XC0C1, 0XC181, 0X0140, 0XC301, 0X03C0, 0X0280, 0XC241,
     0XC601, 0X06C0, 0X0780, 0XC741, 0X0500, 0XC5C1, 0XC481, 0X0440,
     0XCC01, 0X0CC0, 0X0D80, 0XCD41, 0X0F00, 0XCFC1, 0XCE81, 0X0E40,
@@ -37,10 +35,9 @@ const uint16_t crc16_ibm_table[256] = {
     0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
 };
 
-#define CRC_TABLE crc16_ibm_table
 
 void crc_init(uint16_t *crc) {
-	*crc = 0xffff;
+	*crc = CRC_INIT_VALUE;
 }
 
 void crc_add_byte(uint16_t *crc, uint8_t byte) {
@@ -49,15 +46,6 @@ void crc_add_byte(uint16_t *crc, uint8_t byte) {
 	(*crc) ^= CRC_TABLE[temp];
 }
 
-int main() {
-	uint16_t crc = 0;
-	crc_init(&crc);
-	
-	const char *test = "Lammert123";
-	for (int i = 0; test[i] != '\0'; i++) {
-		crc_add_byte(&crc, test[i]);
-	}
-	printf("CRC of 'a' is: %x\n", crc);
-
-	return 0;
+char crc_check(uint16_t crc) {
+	return (crc == CRC_FINAL_VALUE);
 }
