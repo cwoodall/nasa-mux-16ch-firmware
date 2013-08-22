@@ -14,7 +14,6 @@ Modbus specification, instead follow the one layed down here.
 
 The basic packet format is as follows in Table 1:
 
-<center>Table 1</center>
 | Name  | Bytes | Description                                                  |
 |-------|-------|--------------------------------------------------------------|
 | START |     1 | The start byte is the FRAME magic byte (0x81)                |
