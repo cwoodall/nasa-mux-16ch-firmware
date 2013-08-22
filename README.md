@@ -17,8 +17,9 @@ The basic packet format is as follows in Table 1:
 | Name  | Bytes | Description                                                  |
 |-------|-------|--------------------------------------------------------------|
 | START |     1 | The start byte is the FRAME magic byte (0x81)                |
-| CMD   |     1 | The command to be executed (ACK, WR_REG, ERR, etc)           |
-| DATA  |     n |                                                              |
+| CMD   |     1 | The command to be executed (ACK, WR\_REG, ERR, etc)          |
+| DATA  |     n | The length _n_ and the actual content of data is determined 
+                  by CMD CMD                                                         |
 | CRC   |     2 | The CRC is a 16-bit CRC which uses the CRC16-IBM polynomial. the CRC is sent with the low byte first.                                |
 | END   |     1 | The end byte is the the same as the start byte (0x81)        |
 
