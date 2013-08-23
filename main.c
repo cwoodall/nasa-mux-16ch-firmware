@@ -186,25 +186,45 @@ __interrupt void USCI0RX_ISR(void)
 						if (uart_dev.buf_end == 4) {
 							if (uart_dev.buf[1] == 0x00) {
 								settings_reg = (uint16_t)(((uint16_t)uart_dev.buf[2] << 8) | uart_dev.buf[3]);
+								crc_init(&(uart_dev.crc));
+								crc_add_byte( &(uart_dev.crc), 0x82);
+								crc_add_byte( &(uart_dev.crc), uart_dev.buf[1]);
+								crc_add_byte( &(uart_dev.crc), uart_dev.buf[2]);
+								crc_add_byte( &(uart_dev.crc), uart_dev.buf[3]);
+
 								simple_uart_putchar(0x81);
 								simple_uart_putchar(0x82);
 								simple_uart_putchar(uart_dev.buf[1]);
 								simple_uart_putchar(uart_dev.buf[2]);
 								simple_uart_putchar(uart_dev.buf[3]);
+								simple_uart_putchar(uart_dev.crc & 0xff);
+								simple_uart_putchar(uart_dev.crc>>8);
 								simple_uart_putchar(0x81);
 							}
 						}
 					} else {
+						crc_init(&(uart_dev.crc));
+						crc_add_byte( &(uart_dev.crc), 0x83);
+						crc_add_byte( &(uart_dev.crc), 0x00);
+
 						simple_uart_putchar(0x81);
 						simple_uart_putchar(0x83);
 						simple_uart_putchar(0x00);
+						simple_uart_putchar(uart_dev.crc & 0xff);
+						simple_uart_putchar(uart_dev.crc>>8);
 						simple_uart_putchar(0x81);
 					}
 
 				} else {
+					crc_init(&(uart_dev.crc));
+					crc_add_byte( &(uart_dev.crc), 0x83);
+					crc_add_byte( &(uart_dev.crc), 0x01);
+
 					simple_uart_putchar(0x81);
 					simple_uart_putchar(0x83);
-					simple_uart_putchar(0x01);
+					simple_uart_putchar(0x001);
+					simple_uart_putchar(uart_dev.crc & 0xff);
+					simple_uart_putchar(uart_dev.crc>>8);
 					simple_uart_putchar(0x81);
 				}
 				uart_dev.state = IDLE;
