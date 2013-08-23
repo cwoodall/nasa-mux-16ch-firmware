@@ -34,13 +34,17 @@ There are _magic_ bytes which effect the packets:
 
 __FIXME__: Insert Command Table for quick reference.
 
-#### ~~ACK: Acknowledge (0x82) [NOT IMPLEMENTED]~~
+#### ACK: Acknowledge (0x82)
 
-ACK is just an acknowledgement, ACK should only be sent as a response. 
+_ACK_ is just an acknowledgement, _ACK_ should only be sent as a response. 
+The contents of _ACK_ depend on the command sent. For example, _ACK_ will
+have a data length of 0 for _WR\_REG_ or _WR\_BLOCK_ commands. However,
+For _RD\_REG_ and _RD\_BLOCK_ commands (read commands in general) it will
+hold the requested information in the data section.
 
-Data Format (n = 0): No data packet, just sends the command.
+Data Format (n = ?): Data packet in _ACK_ specified by command.
 
-#### ~~ERR: Error (0x83) [NOT IMPLEMENTED]~~
+#### ERR: Error (0x83) [NOT IMPLEMENTED]
 
 ERR returns an error 
 Data Format (n = 1):
@@ -51,13 +55,29 @@ Data Format (n = 1):
 
 Error Types:
 
-| Name | Byte | Description   |
-|------|------|---------------|
-| GEN  | 0x00 | General Error |
+| Name | Byte | Description        |
+|------|------|--------------------|
+| GEN  | 0x00 | General Error      |
+| CRC  | 0x01 | CRC Not Valid      |
+
+Response: No response expected to _ERR_.
 
 #### WR_REG: Write Register (0x84)
+
+Data Format (n = 3):
+
+|Name     | Bytes | Description         |
+|---------|-------|---------------------|
+| Address | 1     | Address MSB First   |
+| Data    | 2     | Data sent MSB first |
+
+Address Mapping: __FIXME__
+
+Response: ACK with data length = 0.
+
 #### ~~RD_REG: Read Register  (0x85) [NOT IMPLEMENTED]~~
 #### ~~WR_BLOCK: Write Block (0x86) [NOT IMPLEMENTED]~~
 #### ~~RD_BLOCK: READ Blcok (0x87) [ NOT IMPLEMENTED]~~
+
 NOT IMPLEMENTED YET
 [modbus]: #

@@ -158,7 +158,7 @@ __interrupt void USCI0RX_ISR(void)
 		// Read in from UART peripheral and echo (for debug... will be removed)
 		rx_read = UCA0RXBUF;
 //		#ifdef __DEBUG__
-		simple_uart_putchar(rx_read);
+//		simple_uart_putchar(rx_read);
 //		#endif
 
 		switch ( uart_dev.state ) {
