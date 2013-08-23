@@ -14,32 +14,10 @@
 #include "spi/spi.h"
 #include "spi/dac7512.h"
 #include "spi/ad5504.h"
-// -- FIXME: MOVE to include/uart/uart.h
+
 static uint16_t settings_reg = 0x0001;
 
-#define ERR_BADINPUT 1
-int8_t hex2nibble(char hex) {
-	if ((hex >= '0') && (hex <= '9')) {
-		return (int) hex - '0';
-	} else if ((hex >= 'a') && (hex <= 'f')) {
-		return (hex - 'a') + 10;
-	} else if ((hex >= 'A') && (hex <= 'F')) {
-		return (hex - 'A') + 10;
-	} else {
-		return -ERR_BADINPUT;
-	}
-}
-
-char nibble2hex(uint8_t a) {
-	if ((a < 0xa)) {
-		return (char) (a + '0');
-	} else if ((a >= 0xa) && (a < 0x10)) {
-		return (char) (a+'a')-0xa;
-	}
-
-	return '\x00';
-}
-
+// -- FIXME: MOVE to include/uart/uart.h
 typedef struct {
 	uint8_t escape;
 	uint8_t frame;
@@ -197,10 +175,11 @@ __interrupt void USCI0RX_ISR(void)
 				crc_add_byte( &(uart_dev.crc), rx_read);
 			} else if (rx_read == uart_magic.frame) {
 				// FIXME: Currently ignoring CRC
-//				if ( crc_valid(uart_dev.crc) ) {
+				if ( crc_check(uart_dev.crc) ) {
 					uart_dev.buf_end -= 2; // remove CRC from message buffer
 					// FIXME: Proper approach is to push onto a message stack and then parse messages outside of UART interrupt.
 					//ring_buf_push(*uart_msg_buf, *uart_dev.buf, uart_dev.buf_end);
+
 					// Parse Message
 
 					if (uart_dev.buf[0] == uart_commands.wr_reg) {
@@ -208,7 +187,7 @@ __interrupt void USCI0RX_ISR(void)
 							if (uart_dev.buf[1] == 0x00) {
 								settings_reg = (uint16_t)(((uint16_t)uart_dev.buf[2] << 8) | uart_dev.buf[3]);
 								simple_uart_putchar(0x81);
-								simple_uart_putchar(0x71);
+								simple_uart_putchar(0x82);
 								simple_uart_putchar(uart_dev.buf[1]);
 								simple_uart_putchar(uart_dev.buf[2]);
 								simple_uart_putchar(uart_dev.buf[3]);
@@ -216,12 +195,18 @@ __interrupt void USCI0RX_ISR(void)
 							}
 						}
 					} else {
-						simple_uart_putchar(0x70);
+						simple_uart_putchar(0x81);
+						simple_uart_putchar(0x83);
+						simple_uart_putchar(0x00);
+						simple_uart_putchar(0x81);
 					}
 
-//				} else {
-
-//				}
+				} else {
+					simple_uart_putchar(0x81);
+					simple_uart_putchar(0x83);
+					simple_uart_putchar(0x01);
+					simple_uart_putchar(0x81);
+				}
 				uart_dev.state = IDLE;
 			} else {
 				uart_dev.buf[uart_dev.buf_end] = rx_read;
@@ -236,90 +221,4 @@ __interrupt void USCI0RX_ISR(void)
 			uart_dev.state = MESSAGE;
 		}
 	}
-/**	static uart_state_t rx_state = COMMAND; // Initialize rx state machine
-	static uint16_t msg_i = 0;
-	static uint16_t addr = 0;
-	static uint16_t msg = 0;
-	static char cmd = 0;
-	int scratch = 0;
-	// Handle a UART interrupt
-	if (IFG2 & UCA0RXIFG) {
-		uint8_t rx_read = UCA0RXBUF;
-		while (!(IFG2 & UCA0TXIFG));
-		UCA0TXBUF = rx_read;
-
-		switch (rx_state) {
-		case COMMAND:
-			cmd=rx_read;
-			rx_state = ADDRESS_H;
-			break;
-		case ADDRESS_H:
-			addr = hex2nibble(rx_read) << 4;
-			rx_state = ADDRESS_L;
-			break;
-		case ADDRESS_L:
-			addr |= hex2nibble(rx_read);
-			rx_state = MESSAGE_HH;
-			break;
-		case MESSAGE_HH:
-			scratch = hex2nibble(rx_read);
-			if (scratch >= 0) {
-				if (msg_i == 3) {
-					msg = (msg << 4) | ((uint16_t) scratch & 0xf);
-					rx_state = END;
-				} else {
-					msg = (msg << 4) | ((uint16_t) scratch & 0xf);
-					msg_i += 1;
-				}
-			} else {
-				rx_state = END;
-			}
-			break;
-		case END:
-			if (rx_read == '\r') {
-				if (cmd == 'W') {
-					if (addr < 16) {
-						ad5504_value_reg[addr] = msg;
-					}
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = nibble2hex(addr);
-
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '!';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\r';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\n';
-				} else if (cmd == 'w') {
-					if (((addr>>4) < 4) && ((addr&0xf) < 4)) {
-						DAC7512_send(&dac7512, msg, addr>>4, addr&0xf);
-					}
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = nibble2hex(addr>>4);
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = nibble2hex(addr&0xf);
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '!';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\r';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\n';
-				} else {
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '?';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\r';
-					while (!(IFG2 & UCA0TXIFG));
-					UCA0TXBUF = '\n';
-				}
-				msg_i = 0;
-				msg = 0;
-				addr = 0;
-				rx_state = COMMAND;
-
-			}
-			break;
-		}
-	}
-	*/
 }
