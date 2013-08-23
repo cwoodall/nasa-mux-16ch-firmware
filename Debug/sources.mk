@@ -100,4 +100,5 @@ SUBDIRS := \
 . \
 src/uart \
 src/spi \
+src/crc16 \
 

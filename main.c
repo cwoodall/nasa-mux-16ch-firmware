@@ -40,15 +40,6 @@ char nibble2hex(uint8_t a) {
 	return '\x00';
 }
 
-const uint8_t __crc_table[256];
-void crc_init(uint16_t *crc) {
-	*crc = 0xffff;
-}
-
-void crc_add_byte(uint16_t *crc, uint8_t byte) {
-	*crc ^= __crc_table[byte];
-}
-
 typedef struct {
 	uint8_t escape;
 	uint8_t frame;

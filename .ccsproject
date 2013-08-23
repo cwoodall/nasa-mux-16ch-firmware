@@ -10,4 +10,5 @@
 	<rts value="libc.a"/>
 	<templateProperties value="id=com.ti.ccstudio.project.templates.basic.Blink,"/>
 	<deviceFamily value="MSP430"/>
+	<isTargetManual value="false"/>
 </projectOptions>

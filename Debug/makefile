@@ -8,6 +8,7 @@ CG_TOOL_ROOT := C:/ti/ccsv5/tools/compiler/msp430_4.1.5
 
 ORDERED_OBJS += \
 $(GEN_CMDS__FLAG) \
+"./src/crc16/crc16.obj" \
 "./src/spi/spi.obj" \
 "./src/spi/dac7512.obj" \
 "./src/spi/ad5504.obj" \
@@ -25,9 +26,11 @@ RMDIR := RMDIR /S/Q
 -include subdir_vars.mk
 -include src/uart/subdir_vars.mk
 -include src/spi/subdir_vars.mk
+-include src/crc16/subdir_vars.mk
 -include subdir_rules.mk
 -include src/uart/subdir_rules.mk
 -include src/spi/subdir_rules.mk
+-include src/crc16/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -129,8 +132,8 @@ nasa-mux-16ch-firmware.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(MSP430_EXECUTABLE_OUTPUTS__QUOTED) "nasa-mux-16ch-firmware.out"
-	-$(RM) "main.pp" "src\uart\uart.pp" "src\spi\ad5504.pp" "src\spi\dac7512.pp" "src\spi\spi.pp" 
-	-$(RM) "main.obj" "src\uart\uart.obj" "src\spi\ad5504.obj" "src\spi\dac7512.obj" "src\spi\spi.obj" 
+	-$(RM) "main.pp" "src\uart\uart.pp" "src\spi\ad5504.pp" "src\spi\dac7512.pp" "src\spi\spi.pp" "src\crc16\crc16.pp" 
+	-$(RM) "main.obj" "src\uart\uart.obj" "src\spi\ad5504.obj" "src\spi\dac7512.obj" "src\spi\spi.obj" "src\crc16\crc16.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

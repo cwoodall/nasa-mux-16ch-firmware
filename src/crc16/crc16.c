@@ -1,4 +1,4 @@
-#include "crc16.h"
+#include "crc16/crc16.h"
 
 const uint16_t crc16_ibm_table[] = {
     0X0000, 0XC0C1, 0XC181, 0X0140, 0XC301, 0X03C0, 0X0280, 0XC241,
