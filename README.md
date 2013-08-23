@@ -46,11 +46,13 @@ ERR returns an error
 Data Format (n = 1):
  
 | Name | Bytes | Description              |
+|------|-------|--------------------------|
 | Type | 1     | Describes the error type |
 
 Error Types:
 
 | Name | Byte | Description   |
+|------|------|---------------|
 | GEN  | 0x00 | General Error |
 
 #### WR_REG: Write Register (0x84)
