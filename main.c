@@ -10,87 +10,21 @@
 #include <msp430.h>
 #include <stdint.h>
 
+#include "types/vector/vector_uint8.h"
 #include "uart/uart.h"
+#include "uart/mux_proto.h"
 #include "spi/spi.h"
 #include "spi/dac7512.h"
 #include "spi/ad5504.h"
-
-static uint16_t settings_reg = 0x0001;
-
-// -- FIXME: MOVE to include/uart/uart.h
-typedef struct {
-	uint8_t escape;
-	uint8_t frame;
-} uart_magic_t;
-
-typedef struct uart_commands {
-	uint8_t wr_reg;
-	uint8_t err;
-	uint8_t ack;
-} uart_commands_t;
-
-const uart_magic_t uart_magic = {
-	0x80,
-	0x81
-};
-
-const uart_commands_t uart_commands = {
-	0x84,
-	0x82,
-	0x83
-};
-
-typedef enum {
-	IDLE,
-	MESSAGE,
-	ESCAPE
-} uart_rx_state_t;
-
-#define UART_BUF_LEN 64
-typedef struct {
-	uart_rx_state_t state;
-//	uint8_t is_escaped;
-	uint8_t buf[UART_BUF_LEN];
-	uint8_t buf_end;
-	uint16_t crc;
-} uart_dev_t;
-
-void uart_dev_init(uart_dev_t *uart) {
-	uint8_t i;
-	uart->state = IDLE;
-	for (i = 0; i < UART_BUF_LEN; i++) {
-		uart->buf[i] = 0;
-	}
-	uart->buf_end = 0;
-	crc_init( &(uart->crc) );
-}
-// -- END FIXME
+#include "crc16/crc16.h"
+#include "types/vector/vector_uint8.h"
 
 // Initialize the state and message
+static uint16_t settings_reg = 0x0001;
 static uart_dev_t uart_dev;
 
-static uint16_t ad5504_value_reg[16] = {
-	0, 0, 0, 0,
-	0, 0, 0, 0,
-	0, 0, 0, 0,
-	0, 0, 0, 0
-};
-
-static uint16_t dac7512_value_reg[4][4] = {
-	{0, 0, 0, 0},
-	{0, 0, 0, 0},
-	{0, 0, 0, 0},
-	{0, 0, 0, 0}
-};
-
-
-static uint16_t dac7512_value = 0;
-static spi_device_t ad5504;
-static spi_device_t dac7512;
 void main(void) {
-  uint16_t ad5504_address_decoded = 0;
   uint8_t i;
-  uint8_t j;
 
   WDTCTL = WDTPW + WDTHOLD;             // Stop watchdog timer
 
@@ -129,24 +63,7 @@ void main(void) {
 }
 
 
-/**
- * Messages are made up of the following. Taking up 8 bytes each. The carriage return character \r helps with synchronization.
- * | CMD | ADDRESS_CHAR_H | ADDRESS_CHAR_L | MSG[15:12] | MSG[11:8] | MSG[7:4] | MSG[3:0] | \r |
- *
- * Everything is sent in HEX representation. For example if I wanted to write the message 0xfe3 to address 0x1 I would send the following:
- * > w01fe3\r
- *
- * CMD | DESCRIPTION           | RESPONSE
- * ----+-----------------------+---------
- *  w  | Write to fine DAC     | "!\r"
- *  r  | Read from fine DAC    | Data in register hex MSB.
- *  W  | Write to general registers | "!\r"
- *  R  | Read from general regs. | Data in register hex MSB.
- */
-void simple_uart_putchar(char a) {
-	while (!(IFG2 & UCA0TXIFG));
-	UCA0TXBUF = a;
-}
+
 
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)
@@ -163,82 +80,77 @@ __interrupt void USCI0RX_ISR(void)
 
 		switch ( uart_dev.state ) {
 		case IDLE:
-			if (rx_read == uart_magic.frame) {
+			if (rx_read == UART_MAGIC_FRAME_START) {
 				uart_dev.state = MESSAGE;
-				uart_dev.buf_end = 0;
-				crc_init(&(uart_dev.crc));
+				vector_uint8_clear(&uart_dev.rxbuf);
+				crc_init(&(uart_dev.rxcrc));
 			}
 			break;
 		case MESSAGE:
-			if (rx_read == uart_magic.escape) {
+			if (rx_read == UART_MAGIC_ESCAPE) {
 				uart_dev.state = ESCAPE;
-				crc_add_byte( &(uart_dev.crc), rx_read);
-			} else if (rx_read == uart_magic.frame) {
-				// FIXME: Currently ignoring CRC
-				if ( crc_check(uart_dev.crc) ) {
-					uart_dev.buf_end -= 2; // remove CRC from message buffer
-					// FIXME: Proper approach is to push onto a message stack and then parse messages outside of UART interrupt.
-					//ring_buf_push(*uart_msg_buf, *uart_dev.buf, uart_dev.buf_end);
-
-					// Parse Message
-
-					if (uart_dev.buf[0] == uart_commands.wr_reg) {
-						if (uart_dev.buf_end == 4) {
-							if (uart_dev.buf[1] == 0x00) {
-								settings_reg = (uint16_t)(((uint16_t)uart_dev.buf[2] << 8) | uart_dev.buf[3]);
-								crc_init(&(uart_dev.crc));
-								crc_add_byte( &(uart_dev.crc), 0x82);
-								crc_add_byte( &(uart_dev.crc), uart_dev.buf[1]);
-								crc_add_byte( &(uart_dev.crc), uart_dev.buf[2]);
-								crc_add_byte( &(uart_dev.crc), uart_dev.buf[3]);
-
-								simple_uart_putchar(0x81);
-								simple_uart_putchar(0x82);
-								simple_uart_putchar(uart_dev.buf[1]);
-								simple_uart_putchar(uart_dev.buf[2]);
-								simple_uart_putchar(uart_dev.buf[3]);
-								simple_uart_putchar(uart_dev.crc & 0xff);
-								simple_uart_putchar(uart_dev.crc>>8);
-								simple_uart_putchar(0x81);
+				crc_add_byte( &(uart_dev.rxcrc), rx_read);
+			} else if (rx_read == UART_MAGIC_FRAME_END) {
+				if ( crc_check(uart_dev.rxcrc) ) {
+					// Remove CRC
+					vector_uint8_pop_back(&(uart_dev.rxbuf));
+					vector_uint8_pop_back(&(uart_dev.rxbuf));
+					// Find command
+					switch (vector_uint8_get(&uart_dev.rxbuf, 0)) {
+					case UART_COMMANDS_WR_REG: // Write Register command
+						// rxbuf should be 4 long (command + addr + data)
+						if (uart_dev.rxbuf.end == 4) {
+							if (vector_uint8_get(&uart_dev.rxbuf, 1) == 0x00) {
+								settings_reg = (uint16_t)(((uint16_t)vector_uint8_get(&uart_dev.rxbuf, 2) << 8) | vector_uint8_get(&uart_dev.rxbuf, 3));
+								uart_dev_send_ack(&uart_dev);
+							} else {
+								uart_dev_send_err(&uart_dev, UART_ERRORS_BAD_ADDRESS);
 							}
+						} else {
+							uart_dev_send_err(&uart_dev, UART_ERRORS_BAD_PACKET);
 						}
-					} else {
-						crc_init(&(uart_dev.crc));
-						crc_add_byte( &(uart_dev.crc), 0x83);
-						crc_add_byte( &(uart_dev.crc), 0x00);
-
-						simple_uart_putchar(0x81);
-						simple_uart_putchar(0x83);
-						simple_uart_putchar(0x00);
-						simple_uart_putchar(uart_dev.crc & 0xff);
-						simple_uart_putchar(uart_dev.crc>>8);
-						simple_uart_putchar(0x81);
+						break;
+					case UART_COMMANDS_READ_REG:
+						// rxbuf should be 2 long (command + address)
+						if (uart_dev.rxbuf.end == 2) {
+							if (vector_uint8_get(&uart_dev.rxbuf, 1) == 0x00) {
+								uart_dev_send_read_ack(&uart_dev, settings_reg);
+							} else {
+								uart_dev_send_err(&uart_dev, UART_ERRORS_BAD_ADDRESS);
+							}
+						} else {
+							uart_dev_send_err(&uart_dev, UART_ERRORS_BAD_PACKET);
+						}
+						break;
+					case UART_COMMANDS_ACK: // ACK back to ACKs... basically a cheap ping.
+						uart_dev_send_ack(&uart_dev);
+						break;
+					case UART_COMMANDS_ERR: // DO NOT REACT TO ERRORS
+						break;
+					default:
+						uart_dev_send_err(&uart_dev, UART_ERRORS_GENERAL);
+						break;
 					}
-
 				} else {
-					crc_init(&(uart_dev.crc));
-					crc_add_byte( &(uart_dev.crc), 0x83);
-					crc_add_byte( &(uart_dev.crc), 0x01);
-
-					simple_uart_putchar(0x81);
-					simple_uart_putchar(0x83);
-					simple_uart_putchar(0x001);
-					simple_uart_putchar(uart_dev.crc & 0xff);
-					simple_uart_putchar(uart_dev.crc>>8);
-					simple_uart_putchar(0x81);
+					uart_dev_send_err(&uart_dev, UART_ERRORS_CRC);
 				}
 				uart_dev.state = IDLE;
+			} else if (rx_read == UART_MAGIC_FRAME_START) {
+				// If we have a spurious frame start, we have a FRAME error. Send a frame error then resync.
+				uart_dev_send_err(&uart_dev, UART_ERRORS_FRAME);
+				vector_uint8_clear(&uart_dev.rxbuf);
+				crc_init(&(uart_dev.rxcrc));
+				uart_dev.state = MESSAGE;
 			} else {
-				uart_dev.buf[uart_dev.buf_end] = rx_read;
-				uart_dev.buf_end += 1;
-				crc_add_byte( &(uart_dev.crc), rx_read);
+				vector_uint8_push_back(&(uart_dev.rxbuf), rx_read);
+				crc_add_byte( &(uart_dev.rxcrc), rx_read);
 			}
 			break;
 		case ESCAPE:
-			uart_dev.buf[uart_dev.buf_end] = rx_read;
-			uart_dev.buf_end += 1;
-			crc_add_byte( &(uart_dev.crc), rx_read);
+			vector_uint8_push_back(&(uart_dev.rxbuf), rx_read);
+			crc_add_byte( &(uart_dev.rxcrc), rx_read);
 			uart_dev.state = MESSAGE;
+			break;
 		}
 	}
 }

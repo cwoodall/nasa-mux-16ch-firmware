@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v4.1.5                      
 ******************************************************************************
->> Linked Fri Aug 23 15:57:30 2013
+>> Linked Mon Aug 26 15:09:12 2013
 
 OUTPUT FILE NAME:   <nasa-mux-16ch-firmware.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 0000c40e
+ENTRY POINT SYMBOL: "_c_int00"  address: 0000c550
 
 
 MEMORY CONFIGURATION
@@ -14,12 +14,12 @@ MEMORY CONFIGURATION
   SFR                   00000000   00000010  00000000  00000010  RWIX
   PERIPHERALS_8BIT      00000010   000000f0  00000000  000000f0  RWIX
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
-  RAM                   00000200   00000200  000000a0  00000160  RWIX
+  RAM                   00000200   00000200  000000a4  0000015c  RWIX
   INFOD                 00001000   00000040  00000000  00000040  RWIX
   INFOC                 00001040   00000040  00000000  00000040  RWIX
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
-  FLASH                 0000c000   00003fe0  000006a5  0000393b  RWIX
+  FLASH                 0000c000   00003fe0  0000087e  00003762  RWIX
   INT00                 0000ffe0   00000002  00000000  00000002  RWIX
   INT01                 0000ffe2   00000002  00000000  00000002  RWIX
   INT02                 0000ffe4   00000002  00000000  00000002  RWIX
@@ -45,43 +45,53 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .pinit     0    0000c000    00000000     UNINITIALIZED
 
-.bss       0    00000200    00000050     UNINITIALIZED
-                  00000200    00000048     main.obj (.bss)
-                  00000248    00000004     rts430.lib : _lock.obj (.bss)
-                  0000024c    00000004                : boot.obj (.bss)
+.bss       0    00000200    00000054     UNINITIALIZED
+                  00000200    0000004c     main.obj (.bss)
+                  0000024c    00000004     rts430.lib : _lock.obj (.bss)
+                  00000250    00000004                : boot.obj (.bss)
 
 .stack     0    000003b0    00000050     UNINITIALIZED
                   000003b0    00000002     rts430.lib : boot.obj (.stack)
                   000003b2    0000004e     --HOLE--
 
-.text      0    0000c000    00000498     
-                  0000c000    000001f8     main.obj (.text:USCI0RX_ISR)
-                  0000c1f8    00000066     uart.obj (.text:setupUART)
-                  0000c25e    00000058     rts430.lib : div32u.obj (.text)
-                  0000c2b6    00000048                : autoinit.obj (.text:_auto_init)
-                  0000c2fe    00000040                : div32s.obj (.text)
-                  0000c33e    0000003e                : asr32.obj (.text:l_asr_const)
-                  0000c37c    0000003c     main.obj (.text:main)
-                  0000c3b8    0000002c     rts430.lib : lsl16.obj (.text)
-                  0000c3e4    0000002a     main.obj (.text:uart_dev_init)
-                  0000c40e    00000026     rts430.lib : boot.obj (.text:_c_int00_noexit)
-                  0000c434    0000001a     crc16.obj (.text:crc_add_byte)
-                  0000c44e    00000012     rts430.lib : memcpy.obj (.text:memcpy)
-                  0000c460    00000010                : epilog.obj (.text)
-                  0000c470    0000000c     crc16.obj (.text:crc_check)
-                  0000c47c    0000000c     main.obj (.text:simple_uart_putchar)
-                  0000c488    00000006     crc16.obj (.text:crc_init)
-                  0000c48e    00000004     rts430.lib : pre_init.obj (.text:_system_pre_init)
-                  0000c492    00000004                : exit.obj (.text:abort)
-                  0000c496    00000002                : _lock.obj (.text:_nop)
+.text      0    0000c000    00000676     
+                  0000c000    000001ba     main.obj (.text:USCI0RX_ISR)
+                  0000c1ba    000000b8     mux_proto.obj (.text:uart_dev_send_tx)
+                  0000c272    00000066     uart.obj (.text:setupUART)
+                  0000c2d8    00000058     rts430.lib : div32u.obj (.text)
+                  0000c330    0000004c                : lsr16.obj (.text)
+                  0000c37c    00000048                : autoinit.obj (.text:_auto_init)
+                  0000c3c4    00000048     mux_proto.obj (.text:uart_dev_send_read_ack)
+                  0000c40c    00000040     rts430.lib : div32s.obj (.text)
+                  0000c44c    0000003e                : asr32.obj (.text:l_asr_const)
+                  0000c48a    0000003c     main.obj (.text:main)
+                  0000c4c6    00000036     mux_proto.obj (.text:uart_dev_send_err)
+                  0000c4fc    0000002c     rts430.lib : lsl16.obj (.text)
+                  0000c528    00000028     mux_proto.obj (.text:uart_dev_init)
+                  0000c550    00000026     rts430.lib : boot.obj (.text:_c_int00_noexit)
+                  0000c576    00000026     mux_proto.obj (.text:uart_dev_send_ack)
+                  0000c59c    0000001e     vector_uint8.obj (.text:vector_uint8_clear)
+                  0000c5ba    0000001e     vector_uint8.obj (.text:vector_uint8_push_back)
+                  0000c5d8    0000001a     crc16.obj (.text:crc_add_byte)
+                  0000c5f2    00000018     vector_uint8.obj (.text:vector_uint8_pop_back)
+                  0000c60a    00000012     rts430.lib : memcpy.obj (.text:memcpy)
+                  0000c61c    00000012     vector_uint8.obj (.text:vector_uint8_init)
+                  0000c62e    00000010     rts430.lib : epilog.obj (.text)
+                  0000c63e    0000000c     crc16.obj (.text:crc_check)
+                  0000c64a    0000000c     uart.obj (.text:simple_uart_putchar)
+                  0000c656    0000000a     vector_uint8.obj (.text:vector_uint8_get)
+                  0000c660    00000006     crc16.obj (.text:crc_init)
+                  0000c666    00000006     vector_uint8.obj (.text:vector_uint8_unlock)
+                  0000c66c    00000004     rts430.lib : pre_init.obj (.text:_system_pre_init)
+                  0000c670    00000004                : exit.obj (.text:abort)
+                  0000c674    00000002                : _lock.obj (.text:_nop)
 
-.const     0    0000c498    00000205     
-                  0000c498    00000200     crc16.obj (.const:crc16_ibm_table)
-                  0000c698    00000005     main.obj (.const)
+.const     0    0000c676    00000200     
+                  0000c676    00000200     crc16.obj (.const:crc16_ibm_table)
 
-.cinit     0    0000c69e    00000008     
-                  0000c69e    00000006     main.obj (.cinit)
-                  0000c6a4    00000002     --HOLE-- [fill = 0]
+.cinit     0    0000c876    00000008     
+                  0000c876    00000006     main.obj (.cinit)
+                  0000c87c    00000002     --HOLE-- [fill = 0]
 
 .int07     0    0000ffee    00000002     
                   0000ffee    00000002     main.obj (.int07)
@@ -106,7 +116,7 @@ address    name
 00000057   BCSCTL1
 00000058   BCSCTL2
 00000053   BCSCTL3
-0000c492   C$$EXIT
+0000c670   C$$EXIT
 00000059   CACTL1
 0000005a   CACTL2
 000010fb   CALBC1_12MHZ
@@ -126,37 +136,53 @@ address    name
 00000001   IE2
 00000002   IFG1
 00000003   IFG2
-0000c3b8   I_LSL
-0000c3e0   I_LSL_1
-0000c3ce   I_LSL_10
-0000c3cc   I_LSL_11
-0000c3ca   I_LSL_12
-0000c3c8   I_LSL_13
-0000c3c6   I_LSL_14
-0000c3c4   I_LSL_15
-0000c3de   I_LSL_2
-0000c3dc   I_LSL_3
-0000c3da   I_LSL_4
-0000c3d8   I_LSL_5
-0000c3d6   I_LSL_6
-0000c3d4   I_LSL_7
-0000c3d2   I_LSL_8
-0000c3d0   I_LSL_9
-0000c376   L_ASR_1
-0000c352   L_ASR_10
-0000c34e   L_ASR_11
-0000c34a   L_ASR_12
-0000c346   L_ASR_13
-0000c342   L_ASR_14
-0000c33e   L_ASR_15
-0000c372   L_ASR_2
-0000c36e   L_ASR_3
-0000c36a   L_ASR_4
-0000c366   L_ASR_5
-0000c362   L_ASR_6
-0000c35e   L_ASR_7
-0000c35a   L_ASR_8
-0000c356   L_ASR_9
+0000c4fc   I_LSL
+0000c524   I_LSL_1
+0000c512   I_LSL_10
+0000c510   I_LSL_11
+0000c50e   I_LSL_12
+0000c50c   I_LSL_13
+0000c50a   I_LSL_14
+0000c508   I_LSL_15
+0000c522   I_LSL_2
+0000c520   I_LSL_3
+0000c51e   I_LSL_4
+0000c51c   I_LSL_5
+0000c51a   I_LSL_6
+0000c518   I_LSL_7
+0000c516   I_LSL_8
+0000c514   I_LSL_9
+0000c330   I_LSR
+0000c376   I_LSR_1
+0000c352   I_LSR_10
+0000c34e   I_LSR_11
+0000c34a   I_LSR_12
+0000c346   I_LSR_13
+0000c342   I_LSR_14
+0000c33e   I_LSR_15
+0000c372   I_LSR_2
+0000c36e   I_LSR_3
+0000c36a   I_LSR_4
+0000c366   I_LSR_5
+0000c362   I_LSR_6
+0000c35e   I_LSR_7
+0000c35a   I_LSR_8
+0000c356   I_LSR_9
+0000c484   L_ASR_1
+0000c460   L_ASR_10
+0000c45c   L_ASR_11
+0000c458   L_ASR_12
+0000c454   L_ASR_13
+0000c450   L_ASR_14
+0000c44c   L_ASR_15
+0000c480   L_ASR_2
+0000c47c   L_ASR_3
+0000c478   L_ASR_4
+0000c474   L_ASR_5
+0000c470   L_ASR_6
+0000c46c   L_ASR_7
+0000c468   L_ASR_8
+0000c464   L_ASR_9
 00000022   P1DIR
 00000025   P1IE
 00000024   P1IES
@@ -230,50 +256,58 @@ address    name
 ffffffff   __binit__
 00000200   __bss__
 ffffffff   __c_args__
-0000c69e   __cinit__
-0000c2fe   __divli
-0000c25e   __divul
-00000250   __end__
-0000c498   __etext__
+0000c876   __cinit__
+0000c40c   __divli
+0000c2d8   __divul
+00000254   __end__
+0000c676   __etext__
 ffffffff   __pinit__
-0000c2fe   __remli
-0000c25e   __remul
+0000c40c   __remli
+0000c2d8   __remul
 0000c000   __text__
-0000c2b6   _auto_init
-0000c40e   _c_int00
-0000c40e   _c_int00_noexit
-0000024c   _cleanup_ptr
-0000024e   _dtors_ptr
-00000248   _lock
-0000c496   _nop
+0000c37c   _auto_init
+0000c550   _c_int00
+0000c550   _c_int00_noexit
+00000250   _cleanup_ptr
+00000252   _dtors_ptr
+0000024c   _lock
+0000c674   _nop
 0000fffe   _reset_vector
 000003b0   _stack
-0000c48e   _system_pre_init
-0000024a   _unlock
-0000c492   abort
+0000c66c   _system_pre_init
+0000024e   _unlock
+0000c670   abort
 ffffffff   binit
-0000c69e   cinit
-0000c498   crc16_ibm_table
-0000c434   crc_add_byte
-0000c470   crc_check
-0000c488   crc_init
-00000250   end
-0000c498   etext
-0000c46c   func_epilog_1
-0000c46a   func_epilog_2
-0000c468   func_epilog_3
-0000c466   func_epilog_4
-0000c464   func_epilog_5
-0000c462   func_epilog_6
-0000c460   func_epilog_7
-0000c37c   main
-0000c44e   memcpy
+0000c876   cinit
+0000c676   crc16_ibm_table
+0000c5d8   crc_add_byte
+0000c63e   crc_check
+0000c660   crc_init
+00000254   end
+0000c676   etext
+0000c63a   func_epilog_1
+0000c638   func_epilog_2
+0000c636   func_epilog_3
+0000c634   func_epilog_4
+0000c632   func_epilog_5
+0000c630   func_epilog_6
+0000c62e   func_epilog_7
+0000c48a   main
+0000c60a   memcpy
 ffffffff   pinit
-0000c1f8   setupUART
-0000c47c   simple_uart_putchar
-0000c69a   uart_commands
-0000c3e4   uart_dev_init
-0000c698   uart_magic
+0000c272   setupUART
+0000c64a   simple_uart_putchar
+0000c528   uart_dev_init
+0000c576   uart_dev_send_ack
+0000c4c6   uart_dev_send_err
+0000c3c4   uart_dev_send_read_ack
+0000c1ba   uart_dev_send_tx
+0000c59c   vector_uint8_clear
+0000c656   vector_uint8_get
+0000c61c   vector_uint8_init
+0000c5f2   vector_uint8_pop_back
+0000c5ba   vector_uint8_push_back
+0000c666   vector_uint8_unlock
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -371,12 +405,12 @@ address    name
 000001bc   ADC10SA
 00000200   .bss
 00000200   __bss__
-00000248   _lock
-0000024a   _unlock
-0000024c   _cleanup_ptr
-0000024e   _dtors_ptr
-00000250   __end__
-00000250   end
+0000024c   _lock
+0000024e   _unlock
+00000250   _cleanup_ptr
+00000252   _dtors_ptr
+00000254   __end__
+00000254   end
 000003b0   _stack
 00000400   __STACK_END
 000010f8   CALDCO_16MHZ
@@ -390,70 +424,94 @@ address    name
 0000c000   .text
 0000c000   USCI0RX_ISR
 0000c000   __text__
-0000c1f8   setupUART
-0000c25e   __divul
-0000c25e   __remul
-0000c2b6   _auto_init
-0000c2fe   __divli
-0000c2fe   __remli
-0000c33e   L_ASR_15
-0000c342   L_ASR_14
-0000c346   L_ASR_13
-0000c34a   L_ASR_12
-0000c34e   L_ASR_11
-0000c352   L_ASR_10
-0000c356   L_ASR_9
-0000c35a   L_ASR_8
-0000c35e   L_ASR_7
-0000c362   L_ASR_6
-0000c366   L_ASR_5
-0000c36a   L_ASR_4
-0000c36e   L_ASR_3
-0000c372   L_ASR_2
-0000c376   L_ASR_1
-0000c37c   main
-0000c3b8   I_LSL
-0000c3c4   I_LSL_15
-0000c3c6   I_LSL_14
-0000c3c8   I_LSL_13
-0000c3ca   I_LSL_12
-0000c3cc   I_LSL_11
-0000c3ce   I_LSL_10
-0000c3d0   I_LSL_9
-0000c3d2   I_LSL_8
-0000c3d4   I_LSL_7
-0000c3d6   I_LSL_6
-0000c3d8   I_LSL_5
-0000c3da   I_LSL_4
-0000c3dc   I_LSL_3
-0000c3de   I_LSL_2
-0000c3e0   I_LSL_1
-0000c3e4   uart_dev_init
-0000c40e   _c_int00
-0000c40e   _c_int00_noexit
-0000c434   crc_add_byte
-0000c44e   memcpy
-0000c460   func_epilog_7
-0000c462   func_epilog_6
-0000c464   func_epilog_5
-0000c466   func_epilog_4
-0000c468   func_epilog_3
-0000c46a   func_epilog_2
-0000c46c   func_epilog_1
-0000c470   crc_check
-0000c47c   simple_uart_putchar
-0000c488   crc_init
-0000c48e   _system_pre_init
-0000c492   C$$EXIT
-0000c492   abort
-0000c496   _nop
-0000c498   __etext__
-0000c498   crc16_ibm_table
-0000c498   etext
-0000c698   uart_magic
-0000c69a   uart_commands
-0000c69e   __cinit__
-0000c69e   cinit
+0000c1ba   uart_dev_send_tx
+0000c272   setupUART
+0000c2d8   __divul
+0000c2d8   __remul
+0000c330   I_LSR
+0000c33e   I_LSR_15
+0000c342   I_LSR_14
+0000c346   I_LSR_13
+0000c34a   I_LSR_12
+0000c34e   I_LSR_11
+0000c352   I_LSR_10
+0000c356   I_LSR_9
+0000c35a   I_LSR_8
+0000c35e   I_LSR_7
+0000c362   I_LSR_6
+0000c366   I_LSR_5
+0000c36a   I_LSR_4
+0000c36e   I_LSR_3
+0000c372   I_LSR_2
+0000c376   I_LSR_1
+0000c37c   _auto_init
+0000c3c4   uart_dev_send_read_ack
+0000c40c   __divli
+0000c40c   __remli
+0000c44c   L_ASR_15
+0000c450   L_ASR_14
+0000c454   L_ASR_13
+0000c458   L_ASR_12
+0000c45c   L_ASR_11
+0000c460   L_ASR_10
+0000c464   L_ASR_9
+0000c468   L_ASR_8
+0000c46c   L_ASR_7
+0000c470   L_ASR_6
+0000c474   L_ASR_5
+0000c478   L_ASR_4
+0000c47c   L_ASR_3
+0000c480   L_ASR_2
+0000c484   L_ASR_1
+0000c48a   main
+0000c4c6   uart_dev_send_err
+0000c4fc   I_LSL
+0000c508   I_LSL_15
+0000c50a   I_LSL_14
+0000c50c   I_LSL_13
+0000c50e   I_LSL_12
+0000c510   I_LSL_11
+0000c512   I_LSL_10
+0000c514   I_LSL_9
+0000c516   I_LSL_8
+0000c518   I_LSL_7
+0000c51a   I_LSL_6
+0000c51c   I_LSL_5
+0000c51e   I_LSL_4
+0000c520   I_LSL_3
+0000c522   I_LSL_2
+0000c524   I_LSL_1
+0000c528   uart_dev_init
+0000c550   _c_int00
+0000c550   _c_int00_noexit
+0000c576   uart_dev_send_ack
+0000c59c   vector_uint8_clear
+0000c5ba   vector_uint8_push_back
+0000c5d8   crc_add_byte
+0000c5f2   vector_uint8_pop_back
+0000c60a   memcpy
+0000c61c   vector_uint8_init
+0000c62e   func_epilog_7
+0000c630   func_epilog_6
+0000c632   func_epilog_5
+0000c634   func_epilog_4
+0000c636   func_epilog_3
+0000c638   func_epilog_2
+0000c63a   func_epilog_1
+0000c63e   crc_check
+0000c64a   simple_uart_putchar
+0000c656   vector_uint8_get
+0000c660   crc_init
+0000c666   vector_uint8_unlock
+0000c66c   _system_pre_init
+0000c670   C$$EXIT
+0000c670   abort
+0000c674   _nop
+0000c676   __etext__
+0000c676   crc16_ibm_table
+0000c676   etext
+0000c876   __cinit__
+0000c876   cinit
 0000fffe   _reset_vector
 ffffffff   __binit__
 ffffffff   __c_args__
@@ -461,4 +519,4 @@ ffffffff   __pinit__
 ffffffff   binit
 ffffffff   pinit
 
-[180 symbols]
+[204 symbols]

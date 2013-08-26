@@ -1,1 +1,1 @@
-"./src/crc16/crc16.obj" "./src/spi/spi.obj" "./src/spi/dac7512.obj" "./src/spi/ad5504.obj" "./src/uart/uart.obj" "./main.obj" "../lnk_msp430g2553.cmd" 
+"./src/crc16/crc16.obj" "./src/spi/spi.obj" "./src/spi/dac7512.obj" "./src/spi/ad5504.obj" "./src/types/vector/vector_uint8.obj" "./src/uart/uart.obj" "./src/uart/mux_proto.obj" "./main.obj" "../lnk_msp430g2553.cmd" 

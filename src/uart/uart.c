@@ -35,3 +35,19 @@ void setupUART(uint16_t baudrate, uint16_t settings)
   }
 }
 
+void simple_uart_putchar(char a) {
+	while (!(IFG2 & UCA0TXIFG));
+	UCA0TXBUF = a;
+}
+
+/**
+ * Send a string of bytes over uart (UART_TXIE disabled)
+ *
+ * @param  a  Pointer to a string of characters of length n
+ * @param  n  Length of the string of characters.
+ */
+void simple_uart_putstr(char *a, uint8_t n) {
+  uint8_t i;
+  for (i = 0; i < n; i++)
+	  simple_uart_putchar(a[i]);
+}

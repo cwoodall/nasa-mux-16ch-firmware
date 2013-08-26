@@ -99,6 +99,7 @@ S64_DEPS__QUOTED :=
 SUBDIRS := \
 . \
 src/uart \
+src/types/vector \
 src/spi \
 src/crc16 \
 

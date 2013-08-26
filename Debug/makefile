@@ -12,7 +12,9 @@ $(GEN_CMDS__FLAG) \
 "./src/spi/spi.obj" \
 "./src/spi/dac7512.obj" \
 "./src/spi/ad5504.obj" \
+"./src/types/vector/vector_uint8.obj" \
 "./src/uart/uart.obj" \
+"./src/uart/mux_proto.obj" \
 "./main.obj" \
 "../lnk_msp430g2553.cmd" \
 
@@ -25,10 +27,12 @@ RMDIR := RMDIR /S/Q
 -include sources.mk
 -include subdir_vars.mk
 -include src/uart/subdir_vars.mk
+-include src/types/vector/subdir_vars.mk
 -include src/spi/subdir_vars.mk
 -include src/crc16/subdir_vars.mk
 -include subdir_rules.mk
 -include src/uart/subdir_rules.mk
+-include src/types/vector/subdir_rules.mk
 -include src/spi/subdir_rules.mk
 -include src/crc16/subdir_rules.mk
 -include objects.mk
@@ -132,8 +136,8 @@ nasa-mux-16ch-firmware.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(MSP430_EXECUTABLE_OUTPUTS__QUOTED) "nasa-mux-16ch-firmware.out"
-	-$(RM) "main.pp" "src\uart\uart.pp" "src\spi\ad5504.pp" "src\spi\dac7512.pp" "src\spi\spi.pp" "src\crc16\crc16.pp" 
-	-$(RM) "main.obj" "src\uart\uart.obj" "src\spi\ad5504.obj" "src\spi\dac7512.obj" "src\spi\spi.obj" "src\crc16\crc16.obj" 
+	-$(RM) "main.pp" "src\uart\mux_proto.pp" "src\uart\uart.pp" "src\types\vector\vector_uint8.pp" "src\spi\ad5504.pp" "src\spi\dac7512.pp" "src\spi\spi.pp" "src\crc16\crc16.pp" 
+	-$(RM) "main.obj" "src\uart\mux_proto.obj" "src\uart\uart.obj" "src\types\vector\vector_uint8.obj" "src\spi\ad5504.obj" "src\spi\dac7512.obj" "src\spi\spi.obj" "src\crc16\crc16.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
