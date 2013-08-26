@@ -46,7 +46,8 @@ void simple_uart_putchar(char a) {
  * @param  a  Pointer to a string of characters of length n
  * @param  n  Length of the string of characters.
  */
-void simple_uart_putstr(char *a, uint8_t n) {
+void simple_uart_putstr(char *a, uint8_t n)
+{
   uint8_t i;
   for (i = 0; i < n; i++)
 	  simple_uart_putchar(a[i]);

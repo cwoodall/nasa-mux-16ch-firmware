@@ -51,7 +51,7 @@ Data Format (n = ?): Data packet in _ACK_ specified by command.
 
 Response: _ACK_ with n = 0.
 
-#### ERR: Error (0x84) [NOT IMPLEMENTED]
+#### ERR: Error (0x84)
 
 ERR returns an error 
 Data Format (n = 1):
@@ -100,6 +100,7 @@ Response: ACK with data length = 2, which contains the 16 bits in the register. 
 
 ### Address Table
 
-| Name | Address | Description | Permissions |
-|------|---------|-------------|-------------|
+| Name     | Address | Description | Permissions |
+|----------|---------|-------------|-------------|
+| Settings | 0x00    |
 [modbus]: #
