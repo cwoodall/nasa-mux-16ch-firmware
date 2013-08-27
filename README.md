@@ -49,6 +49,12 @@ hold the requested information in the data section.
 
 Data Format (n = ?): Data packet in _ACK_ specified by command.
 
+Example Packet:
+
+| __Time__   |  0   |   1  |  2   |  3   |  4 
+|------------|------|------|------|------|------
+| __Packet__ | 0x81 | 0xf0 | 0xBF | 0x04 | 0x82
+
 Response: _ACK_ with n = 0.
 
 #### ERR: Error (0x84)
@@ -72,6 +78,12 @@ Error Types:
 
 Response: No response expected to _ERR_.
 
+Example Packet:
+
+| __Time__   |  0   |   1  |  2   |  3   |  4 
+|------------|------|------|------|------|------
+| __Packet__ | 0x81 | 0xf0 | 0xBF | 0x04 | 0x82
+
 #### WR_REG: Write Register (0x85)
 
 Data Format (n = 3):
@@ -83,6 +95,12 @@ Data Format (n = 3):
 
 Response: ACK with data length = 0.
 
+Example Packet (Turn off LED):
+
+| __Time__   |  0   |   1  |  2   |  3   |  4   |  5   |   6  | 7
+|------------|------|------|------|------|------|------|------|------
+| __Packet__ | 0x81 | 0x85 | 0x00 | 0x00 | 0x00 | 0x29 | 0x28 | 0x82
+
 #### READ_REG: Read Register  (0x86)
 
 Data Format (n = 1):
@@ -92,6 +110,12 @@ Data Format (n = 1):
 | Address | 1     | Address MSB First   |
 
 Response: ACK with data length = 2, which contains the 16 bits in the register. MSB first.
+
+Example Packet (Read value from 0x10 [AD5504 Channel 1]):
+
+| __Time__   |  0   |   1  |  2   |  3   |  4   | 5    |
+|------------|------|------|------|------|------|------|
+| __Packet__ | 0x81 | 0x86 | 0x10 | 0x62 | 0x1C | 0x82 |
 
 #### ~~WR_BLOCK: Write Block (0x86) [NOT IMPLEMENTED]~~
 #### ~~READ_BLOCK: Read Block (0x87) [NOT IMPLEMENTED]~~
@@ -105,6 +129,7 @@ Data Format (n = 0): No data sent
 Response: ACK with data length = 2, which is 0xDEAD. MSB first.
 
 Example Packet:
+
 | __Time__   |  0   |   1  |  2   |  3   |  4 
 |------------|------|------|------|------|------
 | __Packet__ | 0x81 | 0xf0 | 0xBF | 0x04 | 0x82
@@ -117,7 +142,9 @@ Response: ACK with data length = 2, which is 0xBEEF. MSB first.
 
 ### CRC 
 
-The CRC used is the CRC-16 used by MODBUS and implemented the same way. While all data is sent Most Significant Byte first the CRC must be sent Least Signigicant Byte First. This is do to the way that the CRC algorithm is computed on the MSP430. You can type in a message [here][lammert] and see what the CRC is (look at `CRC-16 (Modbus)`).
+The CRC used is the CRC-16 used by MODBUS and implemented the same way. While all data is sent Most Significant Byte first the CRC must be sent Least Signigicant Byte First. This is do to the way that the CRC algorithm is computed on the MSP430. You can type in a message [here][lammert] and see what the CRC is (look at `CRC-16 (Modbus)`). 
+
+__IMPORTANT__: Unescaped magic bytes are not included in CRCs (this includes an unescaped _ESCAPE_ byte). This is to simplify processing where the message can be processed without _ESCAPE__ bytes which are then added in where needed at send time rather than while forming the packet.
 
 Included here is some example CRC code for using the CRC-16 table I implemented. 
 Code is written in C.
@@ -270,14 +297,17 @@ The current implementation on the MSP430 uses a state machine for processing whi
        |                                     |
        V                                     |
     +------+                             +-------+
-	| IDLE | ---[FRAME_START (0x81)]---->|MESSAGE|<---------------+
-	+------+                             +-------+                |
-	                                         |                    |
-                                      [ESCAPE (0x80)]             |
-											 |                    |
-									 		 V                    |
-									    +--------+                |
-										| ESCAPE |---[ANY BYTE]---+
-										+--------+
+    | IDLE | ---[FRAME_START (0x81)]---->|MESSAGE|<---------------+
+    +------+                             +-------+                |
+                                             |                    |
+                                      [ESCAPE (0x80)]             |   
+                                             |                    |
+                                             V                    |
+                                        +--------+                |
+                                        | ESCAPE |---[ANY BYTE]---+
+                                        +--------+
+
+---
+
 [modbus]: #
 [lammert]: http://www.lammertbies.nl/comm/info/crc-calculation.html
