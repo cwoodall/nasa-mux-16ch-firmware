@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v4.1.5                      
 ******************************************************************************
->> Linked Mon Aug 26 18:54:03 2013
+>> Linked Wed Aug 28 17:53:01 2013
 
 OUTPUT FILE NAME:   <nasa-mux-16ch-firmware.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 0000c940
+ENTRY POINT SYMBOL: "_c_int00"  address: 0000ca48
 
 
 MEMORY CONFIGURATION
@@ -14,12 +14,12 @@ MEMORY CONFIGURATION
   SFR                   00000000   00000010  00000000  00000010  RWIX
   PERIPHERALS_8BIT      00000010   000000f0  00000000  000000f0  RWIX
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
-  RAM                   00000200   00000200  000000f6  0000010a  RWIX
+  RAM                   00000200   00000200  0000013a  000000c6  RWIX
   INFOD                 00001000   00000040  00000000  00000040  RWIX
   INFOC                 00001040   00000040  00000000  00000040  RWIX
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
-  FLASH                 0000c000   00003fe0  00000d46  0000329a  RWIX
+  FLASH                 0000c000   00003fe0  00000ea2  0000313e  RWIX
   INT00                 0000ffe0   00000002  00000000  00000002  RWIX
   INT01                 0000ffe2   00000002  00000000  00000002  RWIX
   INT02                 0000ffe4   00000002  00000000  00000002  RWIX
@@ -33,7 +33,7 @@ MEMORY CONFIGURATION
   INT10                 0000fff4   00000002  00000000  00000002  RWIX
   INT11                 0000fff6   00000002  00000000  00000002  RWIX
   INT12                 0000fff8   00000002  00000000  00000002  RWIX
-  INT13                 0000fffa   00000002  00000000  00000002  RWIX
+  INT13                 0000fffa   00000002  00000002  00000000  RWIX
   INT14                 0000fffc   00000002  00000000  00000002  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
 
@@ -45,69 +45,75 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .pinit     0    0000c000    00000000     UNINITIALIZED
 
-.bss       0    00000200    000000a6     UNINITIALIZED
-                  00000200    0000009e     main.obj (.bss)
-                  0000029e    00000004     rts430.lib : _lock.obj (.bss)
-                  000002a2    00000004                : boot.obj (.bss)
+.bss       0    00000200    000000ea     UNINITIALIZED
+                  00000200    000000e1     main.obj (.bss)
+                  000002e1    00000001     --HOLE--
+                  000002e2    00000004     rts430.lib : _lock.obj (.bss)
+                  000002e6    00000004                : boot.obj (.bss)
 
 .stack     0    000003b0    00000050     UNINITIALIZED
                   000003b0    00000002     rts430.lib : boot.obj (.stack)
                   000003b2    0000004e     --HOLE--
 
-.text      0    0000c000    00000ad0     
-                  0000c000    0000029a     main.obj (.text:USCI0RX_ISR)
-                  0000c29a    00000140     main.obj (.text:main)
-                  0000c3da    000000b8     mux_proto.obj (.text:uart_dev_send_tx)
-                  0000c492    00000070     spi.obj (.text:SPI_send)
-                  0000c502    00000066     uart.obj (.text:setupUART)
-                  0000c568    0000005c     rts430.lib : lsr32.obj (.text:l_lsr_const)
-                  0000c5c4    0000005a     dac7512.obj (.text:DAC7512_shiftreg_load)
-                  0000c61e    00000058     rts430.lib : div32u.obj (.text)
-                  0000c676    0000004c                : lsr16.obj (.text)
-                  0000c6c2    00000048                : autoinit.obj (.text:_auto_init)
-                  0000c70a    00000048     mux_proto.obj (.text:uart_dev_send_read_ack)
-                  0000c752    00000040     rts430.lib : div32s.obj (.text)
-                  0000c792    0000003e                : asr32.obj (.text:l_asr_const)
-                  0000c7d0    00000038     ad5504.obj (.text:AD5504_init)
-                  0000c808    00000036     mux_proto.obj (.text:uart_dev_send_err)
-                  0000c83e    0000002e     spi.obj (.text:SPI_init)
-                  0000c86c    0000002c     dac7512.obj (.text:DAC7512_init)
-                  0000c898    0000002c     rts430.lib : lsl16.obj (.text)
-                  0000c8c4    0000002a     ad5504.obj (.text:AD5504_send)
-                  0000c8ee    0000002a     dac7512.obj (.text:DAC7512_send)
-                  0000c918    00000028     mux_proto.obj (.text:uart_dev_init)
-                  0000c940    00000026     rts430.lib : boot.obj (.text:_c_int00_noexit)
-                  0000c966    00000026     mux_proto.obj (.text:uart_dev_send_ack)
-                  0000c98c    00000024     ad5504.obj (.text:AD5504_chip_select)
-                  0000c9b0    00000020     ad5504.obj (.text:AD5504_chip_release)
-                  0000c9d0    00000020     dac7512.obj (.text:DAC7512_shiftreg_init)
-                  0000c9f0    0000001e     vector_uint8.obj (.text:vector_uint8_clear)
-                  0000ca0e    0000001e     vector_uint8.obj (.text:vector_uint8_push_back)
-                  0000ca2c    0000001a     crc16.obj (.text:crc_add_byte)
-                  0000ca46    00000012     dac7512.obj (.text:DAC7512_chip_select)
-                  0000ca58    00000012     rts430.lib : memcpy.obj (.text:memcpy)
-                  0000ca6a    00000012     vector_uint8.obj (.text:vector_uint8_init)
-                  0000ca7c    00000010     rts430.lib : epilog.obj (.text)
-                  0000ca8c    0000000c     dac7512.obj (.text:DAC7512_chip_release)
-                  0000ca98    0000000c     crc16.obj (.text:crc_check)
-                  0000caa4    0000000c     uart.obj (.text:simple_uart_putchar)
-                  0000cab0    0000000a     vector_uint8.obj (.text:vector_uint8_get)
-                  0000caba    00000006     crc16.obj (.text:crc_init)
-                  0000cac0    00000006     vector_uint8.obj (.text:vector_uint8_unlock)
-                  0000cac6    00000004     rts430.lib : pre_init.obj (.text:_system_pre_init)
-                  0000caca    00000004                : exit.obj (.text:abort)
-                  0000cace    00000002                : _lock.obj (.text:_nop)
+.text      0    0000c000    00000bd8     
+                  0000c000    00000396     main.obj (.text:USCI0RX_ISR)
+                  0000c396    000000dc     main.obj (.text:main)
+                  0000c472    000000b8     mux_proto.obj (.text:uart_dev_send_tx)
+                  0000c52a    00000070     spi.obj (.text:SPI_send)
+                  0000c59a    00000070     main.obj (.text:Timer1_A0)
+                  0000c60a    00000066     uart.obj (.text:setupUART)
+                  0000c670    0000005c     rts430.lib : lsr32.obj (.text:l_lsr_const)
+                  0000c6cc    0000005a     dac7512.obj (.text:DAC7512_shiftreg_load)
+                  0000c726    00000058     rts430.lib : div32u.obj (.text)
+                  0000c77e    0000004c                : lsr16.obj (.text)
+                  0000c7ca    00000048                : autoinit.obj (.text:_auto_init)
+                  0000c812    00000048     mux_proto.obj (.text:uart_dev_send_read_ack)
+                  0000c85a    00000040     rts430.lib : div32s.obj (.text)
+                  0000c89a    0000003e                : asr32.obj (.text:l_asr_const)
+                  0000c8d8    00000038     ad5504.obj (.text:AD5504_init)
+                  0000c910    00000036     mux_proto.obj (.text:uart_dev_send_err)
+                  0000c946    0000002e     spi.obj (.text:SPI_init)
+                  0000c974    0000002c     dac7512.obj (.text:DAC7512_init)
+                  0000c9a0    0000002c     rts430.lib : lsl16.obj (.text)
+                  0000c9cc    0000002a     ad5504.obj (.text:AD5504_send)
+                  0000c9f6    0000002a     dac7512.obj (.text:DAC7512_send)
+                  0000ca20    00000028     mux_proto.obj (.text:uart_dev_init)
+                  0000ca48    00000026     rts430.lib : boot.obj (.text:_c_int00_noexit)
+                  0000ca6e    00000026     mux_proto.obj (.text:uart_dev_send_ack)
+                  0000ca94    00000024     ad5504.obj (.text:AD5504_chip_select)
+                  0000cab8    00000020     ad5504.obj (.text:AD5504_chip_release)
+                  0000cad8    00000020     dac7512.obj (.text:DAC7512_shiftreg_init)
+                  0000caf8    0000001e     vector_uint8.obj (.text:vector_uint8_clear)
+                  0000cb16    0000001e     vector_uint8.obj (.text:vector_uint8_push_back)
+                  0000cb34    0000001a     crc16.obj (.text:crc_add_byte)
+                  0000cb4e    00000012     dac7512.obj (.text:DAC7512_chip_select)
+                  0000cb60    00000012     rts430.lib : memcpy.obj (.text:memcpy)
+                  0000cb72    00000012     vector_uint8.obj (.text:vector_uint8_init)
+                  0000cb84    00000010     rts430.lib : epilog.obj (.text)
+                  0000cb94    0000000c     dac7512.obj (.text:DAC7512_chip_release)
+                  0000cba0    0000000c     crc16.obj (.text:crc_check)
+                  0000cbac    0000000c     uart.obj (.text:simple_uart_putchar)
+                  0000cbb8    0000000a     vector_uint8.obj (.text:vector_uint8_get)
+                  0000cbc2    00000006     crc16.obj (.text:crc_init)
+                  0000cbc8    00000006     vector_uint8.obj (.text:vector_uint8_unlock)
+                  0000cbce    00000004     rts430.lib : pre_init.obj (.text:_system_pre_init)
+                  0000cbd2    00000004                : exit.obj (.text:abort)
+                  0000cbd6    00000002                : _lock.obj (.text:_nop)
 
-.const     0    0000cad0    00000220     
-                  0000cad0    00000200     crc16.obj (.const:crc16_ibm_table)
-                  0000ccd0    00000020     ad5504.obj (.const:ad5504_addresses)
+.const     0    0000cbd8    00000220     
+                  0000cbd8    00000200     crc16.obj (.const:crc16_ibm_table)
+                  0000cdd8    00000020     ad5504.obj (.const:ad5504_addresses)
 
-.cinit     0    0000ccf0    00000056     
-                  0000ccf0    00000054     main.obj (.cinit)
-                  0000cd44    00000002     --HOLE-- [fill = 0]
+.cinit     0    0000cdf8    000000aa     
+                  0000cdf8    000000a7     main.obj (.cinit)
+                  0000ce9f    00000001     --HOLE-- [fill = 0]
+                  0000cea0    00000002     (.pad.cinit) [fill = 0]
 
 .int07     0    0000ffee    00000002     
                   0000ffee    00000002     main.obj (.int07)
+
+.int13     0    0000fffa    00000002     
+                  0000fffa    00000002     main.obj (.int13)
 
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430.lib : boot.obj (.reset)
@@ -119,10 +125,10 @@ address    name
 --------   ----
 00000200   .bss
 0000c000   .text
-0000c9b0   AD5504_chip_release
-0000c98c   AD5504_chip_select
-0000c7d0   AD5504_init
-0000c8c4   AD5504_send
+0000cab8   AD5504_chip_release
+0000ca94   AD5504_chip_select
+0000c8d8   AD5504_init
+0000c9cc   AD5504_send
 0000004a   ADC10AE0
 000001b0   ADC10CTL0
 000001b2   ADC10CTL1
@@ -133,7 +139,7 @@ address    name
 00000057   BCSCTL1
 00000058   BCSCTL2
 00000053   BCSCTL3
-0000caca   C$$EXIT
+0000cbd2   C$$EXIT
 00000059   CACTL1
 0000005a   CACTL2
 000010fb   CALBC1_12MHZ
@@ -145,12 +151,12 @@ address    name
 000010fe   CALDCO_1MHZ
 000010fc   CALDCO_8MHZ
 0000005b   CAPD
-0000ca8c   DAC7512_chip_release
-0000ca46   DAC7512_chip_select
-0000c86c   DAC7512_init
-0000c8ee   DAC7512_send
-0000c9d0   DAC7512_shiftreg_init
-0000c5c4   DAC7512_shiftreg_load
+0000cb94   DAC7512_chip_release
+0000cb4e   DAC7512_chip_select
+0000c974   DAC7512_init
+0000c9f6   DAC7512_send
+0000cad8   DAC7512_shiftreg_init
+0000c6cc   DAC7512_shiftreg_load
 00000056   DCOCTL
 00000128   FCTL1
 0000012a   FCTL2
@@ -159,68 +165,68 @@ address    name
 00000001   IE2
 00000002   IFG1
 00000003   IFG2
-0000c898   I_LSL
-0000c8c0   I_LSL_1
-0000c8ae   I_LSL_10
-0000c8ac   I_LSL_11
-0000c8aa   I_LSL_12
-0000c8a8   I_LSL_13
-0000c8a6   I_LSL_14
-0000c8a4   I_LSL_15
-0000c8be   I_LSL_2
-0000c8bc   I_LSL_3
-0000c8ba   I_LSL_4
-0000c8b8   I_LSL_5
-0000c8b6   I_LSL_6
-0000c8b4   I_LSL_7
-0000c8b2   I_LSL_8
-0000c8b0   I_LSL_9
-0000c676   I_LSR
-0000c6bc   I_LSR_1
-0000c698   I_LSR_10
-0000c694   I_LSR_11
-0000c690   I_LSR_12
-0000c68c   I_LSR_13
-0000c688   I_LSR_14
-0000c684   I_LSR_15
-0000c6b8   I_LSR_2
-0000c6b4   I_LSR_3
-0000c6b0   I_LSR_4
-0000c6ac   I_LSR_5
-0000c6a8   I_LSR_6
-0000c6a4   I_LSR_7
-0000c6a0   I_LSR_8
-0000c69c   I_LSR_9
-0000c7ca   L_ASR_1
-0000c7a6   L_ASR_10
-0000c7a2   L_ASR_11
-0000c79e   L_ASR_12
-0000c79a   L_ASR_13
-0000c796   L_ASR_14
-0000c792   L_ASR_15
-0000c7c6   L_ASR_2
-0000c7c2   L_ASR_3
-0000c7be   L_ASR_4
-0000c7ba   L_ASR_5
-0000c7b6   L_ASR_6
-0000c7b2   L_ASR_7
-0000c7ae   L_ASR_8
-0000c7aa   L_ASR_9
-0000c5bc   L_LSR_1
-0000c586   L_LSR_10
-0000c580   L_LSR_11
-0000c57a   L_LSR_12
-0000c574   L_LSR_13
-0000c56e   L_LSR_14
-0000c568   L_LSR_15
-0000c5b6   L_LSR_2
-0000c5b0   L_LSR_3
-0000c5aa   L_LSR_4
-0000c5a4   L_LSR_5
-0000c59e   L_LSR_6
-0000c598   L_LSR_7
-0000c592   L_LSR_8
-0000c58c   L_LSR_9
+0000c9a0   I_LSL
+0000c9c8   I_LSL_1
+0000c9b6   I_LSL_10
+0000c9b4   I_LSL_11
+0000c9b2   I_LSL_12
+0000c9b0   I_LSL_13
+0000c9ae   I_LSL_14
+0000c9ac   I_LSL_15
+0000c9c6   I_LSL_2
+0000c9c4   I_LSL_3
+0000c9c2   I_LSL_4
+0000c9c0   I_LSL_5
+0000c9be   I_LSL_6
+0000c9bc   I_LSL_7
+0000c9ba   I_LSL_8
+0000c9b8   I_LSL_9
+0000c77e   I_LSR
+0000c7c4   I_LSR_1
+0000c7a0   I_LSR_10
+0000c79c   I_LSR_11
+0000c798   I_LSR_12
+0000c794   I_LSR_13
+0000c790   I_LSR_14
+0000c78c   I_LSR_15
+0000c7c0   I_LSR_2
+0000c7bc   I_LSR_3
+0000c7b8   I_LSR_4
+0000c7b4   I_LSR_5
+0000c7b0   I_LSR_6
+0000c7ac   I_LSR_7
+0000c7a8   I_LSR_8
+0000c7a4   I_LSR_9
+0000c8d2   L_ASR_1
+0000c8ae   L_ASR_10
+0000c8aa   L_ASR_11
+0000c8a6   L_ASR_12
+0000c8a2   L_ASR_13
+0000c89e   L_ASR_14
+0000c89a   L_ASR_15
+0000c8ce   L_ASR_2
+0000c8ca   L_ASR_3
+0000c8c6   L_ASR_4
+0000c8c2   L_ASR_5
+0000c8be   L_ASR_6
+0000c8ba   L_ASR_7
+0000c8b6   L_ASR_8
+0000c8b2   L_ASR_9
+0000c6c4   L_LSR_1
+0000c68e   L_LSR_10
+0000c688   L_LSR_11
+0000c682   L_LSR_12
+0000c67c   L_LSR_13
+0000c676   L_LSR_14
+0000c670   L_LSR_15
+0000c6be   L_LSR_2
+0000c6b8   L_LSR_3
+0000c6b2   L_LSR_4
+0000c6ac   L_LSR_5
+0000c6a6   L_LSR_6
+0000c6a0   L_LSR_7
+0000c69a   L_LSR_8
+0000c694   L_LSR_9
 00000022   P1DIR
 00000025   P1IE
 00000024   P1IES
@@ -245,8 +251,8 @@ address    name
 00000010   P3REN
 0000001b   P3SEL
 00000043   P3SEL2
-0000c83e   SPI_init
-0000c492   SPI_send
+0000c946   SPI_init
+0000c52a   SPI_send
 00000172   TA0CCR0
 00000174   TA0CCR1
 00000176   TA0CCR2
@@ -265,6 +271,7 @@ address    name
 00000180   TA1CTL
 0000011e   TA1IV
 00000190   TA1R
+0000c59a   Timer1_A0
 0000005d   UCA0ABCTL
 00000062   UCA0BR0
 00000063   UCA0BR1
@@ -296,58 +303,58 @@ address    name
 ffffffff   __binit__
 00000200   __bss__
 ffffffff   __c_args__
-0000ccf0   __cinit__
-0000c752   __divli
-0000c61e   __divul
-000002a6   __end__
-0000cad0   __etext__
+0000cdf8   __cinit__
+0000c85a   __divli
+0000c726   __divul
+000002ea   __end__
+0000cbd8   __etext__
 ffffffff   __pinit__
-0000c752   __remli
-0000c61e   __remul
+0000c85a   __remli
+0000c726   __remul
 0000c000   __text__
-0000c6c2   _auto_init
-0000c940   _c_int00
-0000c940   _c_int00_noexit
-000002a2   _cleanup_ptr
-000002a4   _dtors_ptr
-0000029e   _lock
-0000cace   _nop
+0000c7ca   _auto_init
+0000ca48   _c_int00
+0000ca48   _c_int00_noexit
+000002e6   _cleanup_ptr
+000002e8   _dtors_ptr
+000002e2   _lock
+0000cbd6   _nop
 0000fffe   _reset_vector
 000003b0   _stack
-0000cac6   _system_pre_init
-000002a0   _unlock
-0000caca   abort
-0000ccd0   ad5504_addresses
+0000cbce   _system_pre_init
+000002e4   _unlock
+0000cbd2   abort
+0000cdd8   ad5504_addresses
 ffffffff   binit
-0000ccf0   cinit
-0000cad0   crc16_ibm_table
-0000ca2c   crc_add_byte
-0000ca98   crc_check
-0000caba   crc_init
-000002a6   end
-0000cad0   etext
-0000ca88   func_epilog_1
-0000ca86   func_epilog_2
-0000ca84   func_epilog_3
-0000ca82   func_epilog_4
-0000ca80   func_epilog_5
-0000ca7e   func_epilog_6
-0000ca7c   func_epilog_7
-0000c29a   main
-0000ca58   memcpy
+0000cdf8   cinit
+0000cbd8   crc16_ibm_table
+0000cb34   crc_add_byte
+0000cba0   crc_check
+0000cbc2   crc_init
+000002ea   end
+0000cbd8   etext
+0000cb90   func_epilog_1
+0000cb8e   func_epilog_2
+0000cb8c   func_epilog_3
+0000cb8a   func_epilog_4
+0000cb88   func_epilog_5
+0000cb86   func_epilog_6
+0000cb84   func_epilog_7
+0000c396   main
+0000cb60   memcpy
 ffffffff   pinit
-0000c502   setupUART
-0000caa4   simple_uart_putchar
-0000c918   uart_dev_init
-0000c966   uart_dev_send_ack
-0000c808   uart_dev_send_err
-0000c70a   uart_dev_send_read_ack
-0000c3da   uart_dev_send_tx
-0000c9f0   vector_uint8_clear
-0000cab0   vector_uint8_get
-0000ca6a   vector_uint8_init
-0000ca0e   vector_uint8_push_back
-0000cac0   vector_uint8_unlock
+0000c60a   setupUART
+0000cbac   simple_uart_putchar
+0000ca20   uart_dev_init
+0000ca6e   uart_dev_send_ack
+0000c910   uart_dev_send_err
+0000c812   uart_dev_send_read_ack
+0000c472   uart_dev_send_tx
+0000caf8   vector_uint8_clear
+0000cbb8   vector_uint8_get
+0000cb72   vector_uint8_init
+0000cb16   vector_uint8_push_back
+0000cbc8   vector_uint8_unlock
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -445,12 +452,12 @@ address    name
 000001bc   ADC10SA
 00000200   .bss
 00000200   __bss__
-0000029e   _lock
-000002a0   _unlock
-000002a2   _cleanup_ptr
-000002a4   _dtors_ptr
-000002a6   __end__
-000002a6   end
+000002e2   _lock
+000002e4   _unlock
+000002e6   _cleanup_ptr
+000002e8   _dtors_ptr
+000002ea   __end__
+000002ea   end
 000003b0   _stack
 00000400   __STACK_END
 000010f8   CALDCO_16MHZ
@@ -464,121 +471,122 @@ address    name
 0000c000   .text
 0000c000   USCI0RX_ISR
 0000c000   __text__
-0000c29a   main
-0000c3da   uart_dev_send_tx
-0000c492   SPI_send
-0000c502   setupUART
-0000c568   L_LSR_15
-0000c56e   L_LSR_14
-0000c574   L_LSR_13
-0000c57a   L_LSR_12
-0000c580   L_LSR_11
-0000c586   L_LSR_10
-0000c58c   L_LSR_9
-0000c592   L_LSR_8
-0000c598   L_LSR_7
-0000c59e   L_LSR_6
-0000c5a4   L_LSR_5
-0000c5aa   L_LSR_4
-0000c5b0   L_LSR_3
-0000c5b6   L_LSR_2
-0000c5bc   L_LSR_1
-0000c5c4   DAC7512_shiftreg_load
-0000c61e   __divul
-0000c61e   __remul
-0000c676   I_LSR
-0000c684   I_LSR_15
-0000c688   I_LSR_14
-0000c68c   I_LSR_13
-0000c690   I_LSR_12
-0000c694   I_LSR_11
-0000c698   I_LSR_10
-0000c69c   I_LSR_9
-0000c6a0   I_LSR_8
-0000c6a4   I_LSR_7
-0000c6a8   I_LSR_6
-0000c6ac   I_LSR_5
-0000c6b0   I_LSR_4
-0000c6b4   I_LSR_3
-0000c6b8   I_LSR_2
-0000c6bc   I_LSR_1
-0000c6c2   _auto_init
-0000c70a   uart_dev_send_read_ack
-0000c752   __divli
-0000c752   __remli
-0000c792   L_ASR_15
-0000c796   L_ASR_14
-0000c79a   L_ASR_13
-0000c79e   L_ASR_12
-0000c7a2   L_ASR_11
-0000c7a6   L_ASR_10
-0000c7aa   L_ASR_9
-0000c7ae   L_ASR_8
-0000c7b2   L_ASR_7
-0000c7b6   L_ASR_6
-0000c7ba   L_ASR_5
-0000c7be   L_ASR_4
-0000c7c2   L_ASR_3
-0000c7c6   L_ASR_2
-0000c7ca   L_ASR_1
-0000c7d0   AD5504_init
-0000c808   uart_dev_send_err
-0000c83e   SPI_init
-0000c86c   DAC7512_init
-0000c898   I_LSL
-0000c8a4   I_LSL_15
-0000c8a6   I_LSL_14
-0000c8a8   I_LSL_13
-0000c8aa   I_LSL_12
-0000c8ac   I_LSL_11
-0000c8ae   I_LSL_10
-0000c8b0   I_LSL_9
-0000c8b2   I_LSL_8
-0000c8b4   I_LSL_7
-0000c8b6   I_LSL_6
-0000c8b8   I_LSL_5
-0000c8ba   I_LSL_4
-0000c8bc   I_LSL_3
-0000c8be   I_LSL_2
-0000c8c0   I_LSL_1
-0000c8c4   AD5504_send
-0000c8ee   DAC7512_send
-0000c918   uart_dev_init
-0000c940   _c_int00
-0000c940   _c_int00_noexit
-0000c966   uart_dev_send_ack
-0000c98c   AD5504_chip_select
-0000c9b0   AD5504_chip_release
-0000c9d0   DAC7512_shiftreg_init
-0000c9f0   vector_uint8_clear
-0000ca0e   vector_uint8_push_back
-0000ca2c   crc_add_byte
-0000ca46   DAC7512_chip_select
-0000ca58   memcpy
-0000ca6a   vector_uint8_init
-0000ca7c   func_epilog_7
-0000ca7e   func_epilog_6
-0000ca80   func_epilog_5
-0000ca82   func_epilog_4
-0000ca84   func_epilog_3
-0000ca86   func_epilog_2
-0000ca88   func_epilog_1
-0000ca8c   DAC7512_chip_release
-0000ca98   crc_check
-0000caa4   simple_uart_putchar
-0000cab0   vector_uint8_get
-0000caba   crc_init
-0000cac0   vector_uint8_unlock
-0000cac6   _system_pre_init
-0000caca   C$$EXIT
-0000caca   abort
-0000cace   _nop
-0000cad0   __etext__
-0000cad0   crc16_ibm_table
-0000cad0   etext
-0000ccd0   ad5504_addresses
-0000ccf0   __cinit__
-0000ccf0   cinit
+0000c396   main
+0000c472   uart_dev_send_tx
+0000c52a   SPI_send
+0000c59a   Timer1_A0
+0000c60a   setupUART
+0000c670   L_LSR_15
+0000c676   L_LSR_14
+0000c67c   L_LSR_13
+0000c682   L_LSR_12
+0000c688   L_LSR_11
+0000c68e   L_LSR_10
+0000c694   L_LSR_9
+0000c69a   L_LSR_8
+0000c6a0   L_LSR_7
+0000c6a6   L_LSR_6
+0000c6ac   L_LSR_5
+0000c6b2   L_LSR_4
+0000c6b8   L_LSR_3
+0000c6be   L_LSR_2
+0000c6c4   L_LSR_1
+0000c6cc   DAC7512_shiftreg_load
+0000c726   __divul
+0000c726   __remul
+0000c77e   I_LSR
+0000c78c   I_LSR_15
+0000c790   I_LSR_14
+0000c794   I_LSR_13
+0000c798   I_LSR_12
+0000c79c   I_LSR_11
+0000c7a0   I_LSR_10
+0000c7a4   I_LSR_9
+0000c7a8   I_LSR_8
+0000c7ac   I_LSR_7
+0000c7b0   I_LSR_6
+0000c7b4   I_LSR_5
+0000c7b8   I_LSR_4
+0000c7bc   I_LSR_3
+0000c7c0   I_LSR_2
+0000c7c4   I_LSR_1
+0000c7ca   _auto_init
+0000c812   uart_dev_send_read_ack
+0000c85a   __divli
+0000c85a   __remli
+0000c89a   L_ASR_15
+0000c89e   L_ASR_14
+0000c8a2   L_ASR_13
+0000c8a6   L_ASR_12
+0000c8aa   L_ASR_11
+0000c8ae   L_ASR_10
+0000c8b2   L_ASR_9
+0000c8b6   L_ASR_8
+0000c8ba   L_ASR_7
+0000c8be   L_ASR_6
+0000c8c2   L_ASR_5
+0000c8c6   L_ASR_4
+0000c8ca   L_ASR_3
+0000c8ce   L_ASR_2
+0000c8d2   L_ASR_1
+0000c8d8   AD5504_init
+0000c910   uart_dev_send_err
+0000c946   SPI_init
+0000c974   DAC7512_init
+0000c9a0   I_LSL
+0000c9ac   I_LSL_15
+0000c9ae   I_LSL_14
+0000c9b0   I_LSL_13
+0000c9b2   I_LSL_12
+0000c9b4   I_LSL_11
+0000c9b6   I_LSL_10
+0000c9b8   I_LSL_9
+0000c9ba   I_LSL_8
+0000c9bc   I_LSL_7
+0000c9be   I_LSL_6
+0000c9c0   I_LSL_5
+0000c9c2   I_LSL_4
+0000c9c4   I_LSL_3
+0000c9c6   I_LSL_2
+0000c9c8   I_LSL_1
+0000c9cc   AD5504_send
+0000c9f6   DAC7512_send
+0000ca20   uart_dev_init
+0000ca48   _c_int00
+0000ca48   _c_int00_noexit
+0000ca6e   uart_dev_send_ack
+0000ca94   AD5504_chip_select
+0000cab8   AD5504_chip_release
+0000cad8   DAC7512_shiftreg_init
+0000caf8   vector_uint8_clear
+0000cb16   vector_uint8_push_back
+0000cb34   crc_add_byte
+0000cb4e   DAC7512_chip_select
+0000cb60   memcpy
+0000cb72   vector_uint8_init
+0000cb84   func_epilog_7
+0000cb86   func_epilog_6
+0000cb88   func_epilog_5
+0000cb8a   func_epilog_4
+0000cb8c   func_epilog_3
+0000cb8e   func_epilog_2
+0000cb90   func_epilog_1
+0000cb94   DAC7512_chip_release
+0000cba0   crc_check
+0000cbac   simple_uart_putchar
+0000cbb8   vector_uint8_get
+0000cbc2   crc_init
+0000cbc8   vector_uint8_unlock
+0000cbce   _system_pre_init
+0000cbd2   C$$EXIT
+0000cbd2   abort
+0000cbd6   _nop
+0000cbd8   __etext__
+0000cbd8   crc16_ibm_table
+0000cbd8   etext
+0000cdd8   ad5504_addresses
+0000cdf8   __cinit__
+0000cdf8   cinit
 0000fffe   _reset_vector
 ffffffff   __binit__
 ffffffff   __c_args__
@@ -586,4 +594,4 @@ ffffffff   __pinit__
 ffffffff   binit
 ffffffff   pinit
 
-[231 symbols]
+[232 symbols]
