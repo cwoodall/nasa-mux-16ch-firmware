@@ -286,6 +286,8 @@ printf("Formatted to be sent: { 0x%02x, 0x%02x }", crc&0xff, crc>>8)
 | DAC7512 #14   | 0x2d      | The bottom 12 bits control the value of DAC7512 14 (R4C2)  
 | DAC7512 #15   | 0x2e      | The bottom 12 bits control the value of DAC7512 15 (R4C3)  
 | DAC7512 #16   | 0x2f      | The bottom 12 bits control the value of DAC7512 16 (R4C4)  
+| DAC7512 #1 Step Interval | 0x30 | Sets the step interval of the DAC7512 channel 1 R1C1 when 0x40 is set to a value greater than 1.
+| DAC7512 #1 Counter | 0x40 | Sets the frequency of the steps of the DAC7512 channel 1 on R1C1. Active only when the value is greater than 1. (2-0xffff)
 
 ### Implementation Concerns
 

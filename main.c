@@ -226,7 +226,7 @@ __interrupt void Timer1_A0(void) {
   static uint16_t counter = 0;
   static uint8_t is_stepped = 0;
 
-  if (dac7512_counter_reg[0] == 0) {
+  if (dac7512_counter_reg[0] < 2) { // NOTE: Having a counter value of 1 is removes your ability to maintain a good UART connection.
     // Hold the counter at 0 if 0x40 (dac_7512_counter_reg[0]) is not set.
     counter = 0;
     P1OUT &= ~BIT0; // Hold the LED at 0
