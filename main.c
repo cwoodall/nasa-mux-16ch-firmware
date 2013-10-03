@@ -67,7 +67,7 @@ void main(void)
   AD5504_init(&ad5504);
   DAC7512_init(&dac7512);
 
-  TA1CCR0 = 100; // Set timer to ? time length intervals.
+  TA1CCR0 = 100; // Set timer to 100 time length intervals.
   //Set TimerA to use auxiliary clock in UP mode
   TA1CTL = TASSEL_2 | ID_2 | MC_1; // Select the SM_CLK which is running at 16MHz/4
   //Enable the interrupt for TACCR0 match
