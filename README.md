@@ -9,6 +9,7 @@ The serial control interface is a basic Rx/Tx UART with the following settings:
 - Stop Bits: 1
 - Flow Control: None
 - Format: Bytes (as apposed to ASCII)
+- 16 bit CRC using the CRC16-IBM polynomial (example code provided)
 
 The serial protocol is inspired by [Modbus][modbus]. Do __not__ follow the 
 Modbus specification, instead follow the one layed down here.
@@ -133,6 +134,9 @@ Example Packet:
 | __Time__   |  0   |   1  |  2   |  3   |  4 
 |------------|------|------|------|------|------
 | __Packet__ | 0x81 | 0xf0 | 0xBF | 0x04 | 0x82
+
+If you send the packed 0x81f0BF0482 (send MSB first) you should be able to disable the CRC and not worry about calculating
+the correct CRC values.
 		
 #### ENABLE_CRC: Enables CRC Checks on the MSP430 (0xf1) [DEFAULT]
 
@@ -286,6 +290,14 @@ printf("Formatted to be sent: { 0x%02x, 0x%02x }", crc&0xff, crc>>8)
 | DAC7512 #14   | 0x2d      | The bottom 12 bits control the value of DAC7512 14 (R4C2)  
 | DAC7512 #15   | 0x2e      | The bottom 12 bits control the value of DAC7512 15 (R4C3)  
 | DAC7512 #16   | 0x2f      | The bottom 12 bits control the value of DAC7512 16 (R4C4)  
+| DAC7512 #1 Step Interval | 0x30 | Sets the step interval of the DAC7512 channel 1 R1C1 when 0x40 is set to a value greater than 1.
+| DAC7512 #1 Counter | 0x40 | Sets the frequency of the steps of the DAC7512 channel 1 on R1C1. Active only when the value is greater than 1. (2-0xffff)
+
+_IMPORTANT_: For register __0x40__ the frequency calculation can be approximated as follows:
+
+f = 40kHz/(DAC7512 #1 COUNTER VALUE), where DAC7512 #1 COUNTER VALUE > 2
+
+For reliable operation I suggest you run f near 5kHz (`DAC7512 #1 Counter Value = 0x0008`)
 
 ### Implementation Concerns
 
